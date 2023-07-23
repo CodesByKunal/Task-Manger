@@ -1,0 +1,62 @@
+body{
+    background-color: rgb(36, 34, 34);
+}
+.priority {
+    display: inline-block;
+    padding: 0px 4px;
+    border-radius: 5px;
+}
+::-webkit-scrollbar{
+    display: none;
+}
+
+.custombtn {
+    padding: 0px 3px;
+
+}
+
+.Urgent {
+    color: rgb(220, 53, 69);
+    border: none;
+    box-shadow: 0px 0px 5px 2px red;
+
+}
+
+.Medium {
+    border: none;
+    color: rgb(255, 174, 0);
+    box-shadow: 0px 0px 5px 2px rgb(255, 174, 0);
+   
+}
+.Low{
+    border: none;
+    color: rgb(25, 135, 84);
+    box-shadow: 0px 0px 5px 2px green;
+}
+select {
+    border-radius: 5px;
+    padding: 1px 0px;
+    background: transparent;
+}
+
+option {
+    background-color: aliceblue;
+    color: rgb(20, 129, 225);
+}
+.unselectable{
+    user-select: none;
+    color: aliceblue;
+}
+.main-container{
+    overflow: scroll;
+    height: 80vh;
+}
+hr{
+    color: aliceblue;
+}
+.default-priority{
+    color: aliceblue;
+}
+.container-fluid{
+    display: none;
+}
