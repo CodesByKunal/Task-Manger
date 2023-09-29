@@ -1,5 +1,7 @@
 const { MongoClient } = require('mongodb')
-const uri = require('./atlas_uri')
+require('dotenv').config()
+const uri=process.env.URI
+console.log(uri)
 const client = new MongoClient(uri)
 const dbname = 'mydatabase'
 const collection_name = 'tasklist'

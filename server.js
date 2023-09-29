@@ -5,7 +5,8 @@ const port = 3000
 app.use(express.json());
 app.use(express.static(('public')));
 app.listen(port, () => {
-    console.log(`Server running`)
+    console.log(`Server is active at http://localhost:3000/
+    `)
 })
 app.post('/posttask', async (req, res) => {
     try {
