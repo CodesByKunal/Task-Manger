@@ -4,10 +4,14 @@ const alert = document.querySelector(".container-fluid")
 const alerttittle = document.querySelector(".alert")
 let cmpltBtn = document.querySelectorAll(".completebutton")
 let mainContainer = document.querySelector(".main-container")
+const loginform = document.getElementById('loginform')
+const loginBtn = document.getElementById('loginBtn')
+const usernameInput = document.getElementById('usernameInput')
 let localdata = [];
+loginform.style = 'display:none'
 const postTask = async () => {
     if (taskInput.value) {
-        
+
         const data = {
             task: taskInput.value,
             completed: false,
@@ -15,25 +19,25 @@ const postTask = async () => {
             priority: ""
         }
         localdata.push(data)
-    renderTask();
-    const options = {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    }
-    const postresponse = await fetch('/posttask', options)
-    try {
-        if (!postresponse.ok) {
-            throw new Error(postresponse.status)
+        renderTask();
+        const options = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
         }
-    } catch (error) {
-        console.log(`Unable to send ${error}`)
+        const postresponse = await fetch('/posttask', options)
+        try {
+            if (!postresponse.ok) {
+                throw new Error(postresponse.status)
+            }
+        } catch (error) {
+            console.log(`Unable to send ${error}`)
+        }
+    } else {
+        alertMessage()
     }
-}else{
-    alertMessage()
-}
 }
 function alertMessage() {
     window.alert("Task can not be empty")
@@ -61,7 +65,8 @@ const getTask = async () => {
             throw new Error(getTaskresponse.status)
         }
         const tasks = await getTaskresponse.json()
-        localdata = tasks
+        console.log(tasks)
+        tasks !== 'Err_Login' ? localdata = await tasks : renderlogin();
         renderTask();
     } catch (error) {
         console.error(error)
@@ -164,3 +169,27 @@ function handleRemoveBtn() {
         })
     }
 }
+
+const renderlogin = () => {
+    loginform.style = 'display:flex'
+}
+
+const sendLogin = async (req, res) => {
+    try {
+        console.log(usernameInput.value)
+        const res = await fetch('/login', {
+            headers:
+            {
+                'Content-Type': 'application/json',
+                'username': `${usernameInput.value}`
+            }
+        });
+        if (res.ok) {
+            loginform.style = 'display:none'
+            getTask();
+        }
+    } catch (error) {
+
+    }
+}
+loginBtn.addEventListener('click', sendLogin)

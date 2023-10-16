@@ -1,11 +1,10 @@
 const { MongoClient } = require('mongodb')
 require('dotenv').config()
-const uri=process.env.URI
+const uri = process.env.URI
 console.log(uri)
 const client = new MongoClient(uri)
-const dbname = 'mydatabase'
-const collection_name = 'tasklist'
-const tasklistconnection = client.db(dbname).collection(collection_name)
+const dbname = 'taskManager';
+
 const connectTodatabase = async () => {
     try {
         await client.connect()
@@ -15,21 +14,30 @@ const connectTodatabase = async () => {
     }
 }
 
-const insertInDatabase = async (reqdata) => {
+const createUser = async (newUser) => {
+    try {
+        await client.connect();
+        await client.db(dbname).createCollection(newUser)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const insertInDatabase = async (reqdata, userName) => {
     try {
         await connectTodatabase();
-        await tasklistconnection.insertOne(reqdata);
+        await client.db(dbname).collection(userName).insertOne(reqdata);
     } catch (error) {
         console.error(`Unable to find ${error}`)
     } finally {
         await client.close()
-    } 
+    }
 }
 
-const deleteInDatabse = async (taskId) => {
+const deleteInDatabse = async (taskId, userName) => {
     try {
         await connectTodatabase();
-        let result=await tasklistconnection.deleteOne({id:`${taskId}`});
+        let result = await client.db(dbname).collection(userName).deleteOne({ id: `${taskId}` });
         console.log(result.deletedCount)
     } catch (error) {
         console.error(`Unable to delete ${error}`)
@@ -38,10 +46,10 @@ const deleteInDatabse = async (taskId) => {
     }
 }
 
-const alltaskInDatabase = async () => {
+const alltaskInDatabase = async (userName) => {
     try {
         await connectTodatabase();
-        let cursor = tasklistconnection.find()
+        let cursor = client.db(dbname).collection(userName).find()
         let tasks = await cursor.toArray()
         return tasks
     } catch (error) {
@@ -51,15 +59,15 @@ const alltaskInDatabase = async () => {
     }
 }
 
-const updateInDatabase = async (id, priority) => {
+const updateInDatabase = async (id, priority, userName) => {
     try {
         await connectTodatabase();
         const tobeupdated = { id: `${id}` }
         const updatedvalue = { $set: { priority: `${priority}` } }
-        await tasklistconnection.updateOne(tobeupdated, updatedvalue)
+        await client.db(dbname).collection(userName).updateOne(tobeupdated, updatedvalue)
     } catch (error) {
         console.error(error)
-    }finally{
+    } finally {
         await client.close()
         console.log('Disconcted to databse')
     }
@@ -68,5 +76,6 @@ module.exports = {
     alltaskInDatabase,
     deleteInDatabse,
     insertInDatabase,
-    updateInDatabase
+    updateInDatabase,
+    createUser
 }
